@@ -46,6 +46,45 @@ app.get('/', function(request, response) {
   response.render('pages/index');
 });
 
+
+/**
+ * ***************Login User********************************
+ */
+app.post('/login',jsonParser, function(request, response) {
+  
+  var userEmail=request.body.email;
+  var userPassword=request.body.password;
+
+        Table.findOne({email: userEmail, password: userPassword}, function(err,newTable){
+
+              if(err) {
+                console.log(err);
+                return
+              }
+              else
+              {
+                if(newTable)
+
+                {
+                  response.json({success:true,ID:newTable._id,email:newTable.email,password:newTable.password});
+                  
+                }
+
+                else
+                {
+                  response.send({ success : false, message : false });
+                }
+              }            
+
+
+          });
+
+  });
+   /**
+    * ******************************************************************
+    */
+
+
 /**
  * ***************Signup User********************************
  */
@@ -53,28 +92,50 @@ app.post('/signup',jsonParser, function(request, response) {
 
   var userEmail=request.body.email;
   var userPassword=request.body.password;
-  var table=new Table();
 
-  table.email=userEmail;
-  table.password=userPassword;
+        Table.findOne({email: userEmail, password: userPassword}, function(err,newTable){
 
-  table.save(function (err) {
-          
-              if(err)
-              {
-                console.log(err );
-                response.send({ success : false, message : err });
+              if(err) {
+                console.log(err);
+                
               }
               else
               {
-                console.log('Signup succeeded');
-                response.send({ success : true, message : 'Signup succeeded'});
-                
-              }
+                if(newTable)
 
-       
-       
-        });
+                {
+                  response.json({success:false,message:'NotNull'});
+                  
+                }
+
+                else
+                {
+                  var table=new Table();
+                  
+                    table.email=userEmail;
+                    table.password=userPassword;
+
+                    table.save(function (err,newTable) {
+                      
+                          if(err)
+                          {
+                            response.send({ success : false, message : err });
+                          }
+                          else
+                          {
+                            response.json({success:true,ID:newTable._id,email:newTable.email,password:newTable.password});
+                            
+                          }
+            
+                   
+                   
+                    });
+                }
+              }            
+
+
+          });
+
 
  });
  /**
@@ -90,12 +151,12 @@ app.post('/mainMenuAdd',jsonParser, function(request, response) {
     var userEmail=request.body.email;
     var userPassword=request.body.password;
     var userMainMenu=request.body.mainMenu;
-    var userRecipe=request.body.recipe
-
+    var userRecipe=request.body.recipe;
+    var userDuration=request.body.duration;
 
           Table.findOne({email:userEmail,password:userPassword}).then(function(record){
            
-            record.mainMenu.push({mainMenu:userMainMenu,recipe:userRecipe});
+            record.mainMenu.push({mainMenu:userMainMenu,recipe:userRecipe,duration:userDuration});
             record.save(function (err){
 
               if(err)
@@ -107,7 +168,7 @@ app.post('/mainMenuAdd',jsonParser, function(request, response) {
               {
                 console.log('MainMenu Addition succeeded');
                 //response.send({ success : true, message : 'MainMenu succeeded'});
-                response.json({record});
+                response.json({success:true});
               }
 
             });
@@ -126,24 +187,24 @@ app.post('/subMenuAdd',jsonParser, function(request, response) {
     var userEmail=request.body.email;
     var userPassword=request.body.password;
     var userSubMenu=request.body.subMenu;
-    var userRecipe=request.body.recipe
+    var userRecipe=request.body.recipe;
+    var userDuration=request.body.duration;
 
 
           Table.findOne({email:userEmail,password:userPassword}).then(function(record){
-           
-            record.subMenu.push({subMenu:userSubMenu,recipe:userRecipe});
+            
+            record.subMenu.push({subMenu:userSubMenu,recipe:userRecipe,duration:userDuration});
             record.save(function (err){
 
               if(err)
               {
-                console.log(err);
-                response.send({ success : false, message : err });
+                
+                response.json({ success : false, message : err });
               }
               else
               {
                 console.log('SubMenu Addition succeeded');
-                //response.send({ success : true, message : 'MainMenu succeeded'});
-                response.json({record});
+                response.json({success:true});
               }
 
             });
@@ -162,12 +223,12 @@ app.post('/desertAdd',jsonParser, function(request, response) {
     var userEmail=request.body.email;
     var userPassword=request.body.password;
     var userDesert=request.body.desert;
-    var userRecipe=request.body.recipe
-
+    var userRecipe=request.body.recipe;
+    var userDuration=request.body.duration;
 
           Table.findOne({email:userEmail,password:userPassword}).then(function(record){
            
-            record.desert.push({desert:userDesert,recipe:userRecipe});
+            record.desert.push({desert:userDesert,recipe:userRecipe,duration:userDuration});
             record.save(function (err){
 
               if(err)
@@ -179,7 +240,7 @@ app.post('/desertAdd',jsonParser, function(request, response) {
               {
                 console.log('Desert Addition succeeded');
                 //response.send({ success : true, message : 'MainMenu succeeded'});
-                response.json({record});
+                response.json({success:true});
               }
 
             });
@@ -198,12 +259,12 @@ app.post('/soupAdd',jsonParser, function(request, response) {
     var userEmail=request.body.email;
     var userPassword=request.body.password;
     var userSoup=request.body.soup;
-    var userRecipe=request.body.recipe
-
+    var userRecipe=request.body.recipe;
+    var userDuration=request.body.duration;
 
           Table.findOne({email:userEmail,password:userPassword}).then(function(record){
            
-            record.soup.push({soup:userSoup,recipe:userRecipe});
+            record.soup.push({soup:userSoup,recipe:userRecipe,duration:userDuration});
             record.save(function (err){
 
               if(err)
@@ -215,7 +276,44 @@ app.post('/soupAdd',jsonParser, function(request, response) {
               {
                 console.log('Soup Addition succeeded');
                 //response.send({ success : true, message : 'MainMenu succeeded'});
-                response.json({record});
+                response.json({success:true});
+              }
+
+            });
+        });
+  
+   });
+   /**
+    * ******************************************************************
+    */
+
+
+    /**
+ * ***************SoupAdd********************************
+ */
+app.post('/saladAdd',jsonParser, function(request, response) {
+  
+    var userEmail=request.body.email;
+    var userPassword=request.body.password;
+    var userSalad=request.body.salad;
+    var userRecipe=request.body.recipe;
+    var userDuration=request.body.duration;
+
+          Table.findOne({email:userEmail,password:userPassword}).then(function(record){
+           
+            record.salad.push({salad:userSalad,recipe:userRecipe,duration:userDuration});
+            record.save(function (err){
+
+              if(err)
+              {
+                console.log(err);
+                response.send({ success : false, message : err });
+              }
+              else
+              {
+                console.log('Soup Addition succeeded');
+                //response.send({ success : true, message : 'MainMenu succeeded'});
+                response.json({success:true});
               }
 
             });
@@ -239,12 +337,13 @@ app.post('/combinationAdd',jsonParser, function(request, response) {
     var userSubMenu=request.body.subMenu;
     var userDesert=request.body.desert;
     var userSoup=request.body.soup;
-
+    var userSalad=request.body.salad;
+    var userDuration=request.body.duration;
 
 
           Table.findOne({email:userEmail,password:userPassword}).then(function(record){
            
-            record.combination.push({menuName:userMenuName,mainMenu:userMainMenu,subMenu:userSubMenu,desert:userDesert,soup:userSoup});
+            record.combination.push({menuName:userMenuName,mainMenu:userMainMenu,subMenu:userSubMenu,desert:userDesert,soup:userSoup,salad:userSalad,totalDuration:userDuration});
             record.save(function (err){
 
               if(err)
@@ -256,7 +355,7 @@ app.post('/combinationAdd',jsonParser, function(request, response) {
               {
                 console.log('Combination Addition succeeded');
                 //response.send({ success : true, message : 'MainMenu succeeded'});
-                response.json({record});
+                response.json({success:true});
               }
 
             });
@@ -290,7 +389,7 @@ app.delete('/mainMenuRemove',jsonParser, function(request, response) {
               else
               {
                 console.log('MainMenu Remove succeeded');
-                response.json({record});
+                response.json(record);
               }
 
             });
@@ -323,7 +422,7 @@ app.delete('/subMenuRemove',jsonParser, function(request, response) {
               else
               {
                 console.log('SubMenu Remove succeeded');
-                response.json({record});
+                response.json(record);
               }
 
             });
@@ -356,7 +455,7 @@ app.delete('/desertRemove',jsonParser, function(request, response) {
               else
               {
                 console.log('Desert Remove succeeded');
-                response.json({record});
+                response.json(record);
               }
 
             });
@@ -389,7 +488,40 @@ app.delete('/soupRemove',jsonParser, function(request, response) {
               else
               {
                 console.log('Soup Remove succeeded');
-                response.json({record});
+                response.json(record);
+              }
+
+            });
+        });
+  
+   });
+   /**
+    * ******************************************************************
+    */
+
+                     /**
+ * ***************SoupRemove********************************
+ */
+app.delete('/saladRemove',jsonParser, function(request, response) {
+  
+    var userEmail=request.body.email;
+    var userPassword=request.body.password;
+    var userSaladId=request.body.saladId;
+
+          Table.findOne({email:userEmail,password:userPassword}).then(function(record){
+           
+            record.salad.pull({'_id':userSaladId});
+            record.save(function (err){
+
+              if(err)
+              {
+                console.log(err);
+                response.send({ success : false, message : err });
+              }
+              else
+              {
+                console.log('Soup Remove succeeded');
+                response.json(record);
               }
 
             });
@@ -425,7 +557,7 @@ app.delete('/combinationRemove',jsonParser, function(request, response) {
               {
                 console.log('Combination Addition succeeded');
                 //response.send({ success : true, message : 'MainMenu succeeded'});
-                response.json({record});
+                response.json(record);
               }
 
             });
@@ -454,9 +586,9 @@ app.post('/mainMenuRead',jsonParser, function(request, response) {
                   }
                   else
                   {
-                    console.log('MainMenu reading succeeded');
+                    console.log('MainMenu reading ok');
                     //response.send({ success : true, message : 'MainMenu succeeded'});
-                    response.json(record.mainMenu);
+                    response.json(record);
                   }
 
             });
@@ -467,33 +599,7 @@ app.post('/mainMenuRead',jsonParser, function(request, response) {
     */
 
         /**
- * ***************mainMenuRead********************************
- */
-app.post('/mainMenuRead',jsonParser, function(request, response) {
-  
-      var userEmail=request.body.email;
-      var userPassword=request.body.password;
-
-      Table.findOne({email:userEmail,password:userPassword},function(err,record){
-                
-                  if(err)
-                  {
-                    console.log(err);
-                    response.json({ success : false, message : err });
-                  }
-                  else
-                  {
-                    console.log('MainMenu reading succeeded');
-                    //response.send({ success : true, message : 'MainMenu succeeded'});
-                    response.json(record.mainMenu);
-                  }
-
-            });
-  
-   });
-   /**
-    * ******************************************************************
-    */
+ 
 
             /**
  * ***************subMenuRead********************************
@@ -514,7 +620,7 @@ app.post('/subMenuRead',jsonParser, function(request, response) {
                   {
                     console.log('subMenu reading succeeded');
                     //response.send({ success : true, message : 'MainMenu succeeded'});
-                    response.json(record.subMenu);
+                    response.json(record);
                   }
 
             });
@@ -529,24 +635,24 @@ app.post('/subMenuRead',jsonParser, function(request, response) {
  */
 app.post('/desertRead',jsonParser, function(request, response) {
   
-      var userEmail=request.body.email;
-      var userPassword=request.body.password;
+  var userEmail=request.body.email;
+  var userPassword=request.body.password;
 
-      Table.findOne({email:userEmail,password:userPassword},function(err,record){
-                
-                  if(err)
-                  {
-                    console.log(err);
-                    response.json({ success : false, message : err });
-                  }
-                  else
-                  {
-                    console.log('desert reading succeeded');
-                    //response.send({ success : true, message : 'MainMenu succeeded'});
-                    response.json(record.desert);
-                  }
+  Table.findOne({email:userEmail,password:userPassword},function(err,record){
+            
+              if(err)
+              {
+                console.log(err);
+                response.json({ success : false, message : err });
+              }
+              else
+              {
+                console.log('subMenu reading succeeded');
+                //response.send({ success : true, message : 'MainMenu succeeded'});
+                response.json(record);
+              }
 
-            });
+        });
   
    });
    /**
@@ -558,24 +664,55 @@ app.post('/desertRead',jsonParser, function(request, response) {
  */
 app.post('/soupRead',jsonParser, function(request, response) {
   
-      var userEmail=request.body.email;
-      var userPassword=request.body.password;
+  var userEmail=request.body.email;
+  var userPassword=request.body.password;
 
-      Table.findOne({email:userEmail,password:userPassword},function(err,record){
-                
-                  if(err)
-                  {
-                    console.log(err);
-                    response.json({ success : false, message : err });
-                  }
-                  else
-                  {
-                    console.log('soup reading succeeded');
-                    //response.send({ success : true, message : 'MainMenu succeeded'});
-                    response.json(record.soup);
-                  }
+  Table.findOne({email:userEmail,password:userPassword},function(err,record){
+            
+              if(err)
+              {
+                console.log(err);
+                response.json({ success : false, message : err });
+              }
+              else
+              {
+                console.log('subMenu reading succeeded');
+                //response.send({ success : true, message : 'MainMenu succeeded'});
+                response.json(record);
+              }
 
-            });
+        });
+  
+   });
+   /**
+    * ******************************************************************
+    */
+
+
+
+     /**
+ * ***************soupRead********************************
+ */
+app.post('/saladRead',jsonParser, function(request, response) {
+  
+  var userEmail=request.body.email;
+  var userPassword=request.body.password;
+
+  Table.findOne({email:userEmail,password:userPassword},function(err,record){
+            
+              if(err)
+              {
+                console.log(err);
+                response.json({ success : false, message : err });
+              }
+              else
+              {
+                console.log('subMenu reading succeeded');
+                //response.send({ success : true, message : 'MainMenu succeeded'});
+                response.json(record);
+              }
+
+        });
   
    });
    /**
@@ -587,24 +724,24 @@ app.post('/soupRead',jsonParser, function(request, response) {
  */
 app.post('/combinationRead',jsonParser, function(request, response) {
   
-      var userEmail=request.body.email;
-      var userPassword=request.body.password;
+  var userEmail=request.body.email;
+  var userPassword=request.body.password;
 
-      Table.findOne({email:userEmail,password:userPassword},function(err,record){
-                
-                  if(err)
-                  {
-                    console.log(err);
-                    response.json({ success : false, message : err });
-                  }
-                  else
-                  {
-                    console.log('combination reading succeeded');
-                    //response.send({ success : true, message : 'MainMenu succeeded'});
-                    response.json(record.combination);
-                  }
+  Table.findOne({email:userEmail,password:userPassword},function(err,record){
+            
+              if(err)
+              {
+                console.log(err);
+                response.json({ success : false, message : err });
+              }
+              else
+              {
+                console.log('subMenu reading succeeded');
+                //response.send({ success : true, message : 'MainMenu succeeded'});
+                response.json(record);
+              }
 
-            });
+        });
   
    });
    /**
@@ -614,5 +751,3 @@ app.post('/combinationRead',jsonParser, function(request, response) {
 app.listen(app.get('port'), function() {
   console.log('Node app is running on port', app.get('port'));
 });
-
-

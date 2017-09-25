@@ -6,38 +6,52 @@ var userID = Schema.ObjectId;
 var mainMenuSchema = new Schema({
  
     mainMenu    : String,
-    recipe      : String
+    recipe      : String,
+    duration    : String
 
 });
 
 var subMenuSchema = new Schema({
     
        subMenu    : String,
-       recipe     : String
+       recipe     : String,
+       duration   : String
    
 });
 
 var desertSchema = new Schema({
     
        desert    : String,
-       recipe    : String
+       recipe    : String,
+       duration  : String
    
 });
    
    var soupSchema = new Schema({
        
       soup      : String,
-      recipe    : String
+      recipe    : String,
+      duration  : String
       
+});
+
+var saladSchema = new Schema({
+    
+   salad      : String,
+   recipe    : String,
+   duration  : String
+   
 });
 
 
 var combinationSchema = new Schema({
-    menuName    : String,
-    mainMenu    : String,
-    subMenu     : String,
-    desert      : String,
-    soup        : String
+    menuName         : String,
+    mainMenu         : String,
+    subMenu          : String,
+    desert           : String,
+    soup             : String,
+    salad            : String,
+    totalDuration    : String
 });
 
 var Table = new Schema({
@@ -48,7 +62,8 @@ var Table = new Schema({
   mainMenu            : [mainMenuSchema],
   subMenu             : [subMenuSchema],
   desert              : [desertSchema],
-  soup                : [soupSchema]
+  soup                : [soupSchema],
+  salad               : [saladSchema]
   
 });
 
